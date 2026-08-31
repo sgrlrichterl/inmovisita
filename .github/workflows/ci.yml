@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  backend:
+    name: Backend (Cloud Functions)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/functions
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+
+      - name: Verificacion de tipos
+        run: npm run typecheck
+
+      - name: Pruebas unitarias
+        run: npm test
+
+  mobile:
+    name: Aplicacion movil (Flutter)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Analisis estatico
+        run: flutter analyze --no-fatal-infos
+
+      - name: Pruebas unitarias
+        run: flutter test

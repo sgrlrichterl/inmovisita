@@ -1,0 +1,67 @@
+rules_version = '2';
+
+// Reglas de seguridad de Cloud Firestore para InmoVisita.
+//
+// Principio aplicado: denegar por defecto y conceder el minimo necesario.
+// Las escrituras de negocio NO se hacen directamente desde el dispositivo:
+// pasan por la API (`/v1/sync/push`), que valida, calcula el puntaje y usa el
+// SDK de administrador. Estas reglas son la segunda barrera de defensa por si
+// alguien intenta escribir con el SDK cliente.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+
+    function rol() {
+      return request.auth.token.rol;
+    }
+
+    function esCoordinador() {
+      return autenticado() && (rol() == 'coordinador' || rol() == 'admin');
+    }
+
+    function esDuenio(uid) {
+      return autenticado() && request.auth.uid == uid;
+    }
+
+    // Catalogo comun: lectura para cualquier usuario autenticado; la escritura
+    // queda reservada al backend (SDK admin, que omite estas reglas).
+    match /inmuebles/{inmuebleId} {
+      allow read: if autenticado();
+      allow write: if false;
+    }
+
+    // Un asesor solo ve sus propias visitas; el coordinador ve todas.
+    match /visitas/{visitaId} {
+      allow read: if esCoordinador() || esDuenio(resource.data.asesorUid);
+      allow create, update, delete: if false;
+    }
+
+    // Perfil del usuario: puede leer y actualizar unicamente su token de
+    // notificaciones. El rol nunca se escribe desde el cliente.
+    match /usuarios/{uid} {
+      allow read: if esDuenio(uid) || esCoordinador();
+      allow update: if esDuenio(uid)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['fcmToken', 'updatedAt']);
+      allow create, delete: if false;
+    }
+
+    // Registro de idempotencia y metricas: uso exclusivo del backend.
+    match /operaciones_sync/{operacionId} {
+      allow read, write: if false;
+    }
+
+    match /metricas_diarias/{fecha} {
+      allow read: if esCoordinador();
+      allow write: if false;
+    }
+
+    // Cualquier otra ruta queda denegada.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

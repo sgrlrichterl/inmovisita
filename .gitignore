@@ -1,0 +1,36 @@
+# Flutter / Dart
+mobile/.dart_tool/
+mobile/.packages
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/pubspec.lock
+mobile/ios/Pods/
+mobile/android/.gradle/
+mobile/android/local.properties
+*.iml
+
+# Node / Cloud Functions
+node_modules/
+backend/functions/lib/
+backend/functions/coverage/
+npm-debug.log*
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+*-firebase-adminsdk-*.json
+google-services.json
+GoogleService-Info.plist
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

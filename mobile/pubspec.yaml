@@ -1,0 +1,40 @@
+name: inmovisita
+description: >-
+  InmoVisita - Ecosistema movil offline-first para el registro de visitas
+  inmobiliarias en zonas con baja conectividad.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  # Gestion de estado declarativa y testeable
+  flutter_riverpod: ^2.5.1
+  # Cliente HTTP para el consumo de la API REST (Cloud Functions)
+  http: ^1.2.1
+  # Persistencia local (fuente de verdad en modo offline)
+  sqflite: ^2.3.3
+  path: ^1.9.0
+  # Identificadores idempotentes generados en el cliente
+  uuid: ^4.4.0
+  # Deteccion de cambios de conectividad para disparar la sincronizacion
+  connectivity_plus: ^6.0.3
+  # Almacenamiento cifrado de tokens (Keychain / EncryptedSharedPreferences)
+  flutter_secure_storage: ^9.2.2
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  # Permite ejecutar SQLite en el runner de pruebas (CI sin emulador)
+  sqflite_common_ffi: ^2.3.3
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true

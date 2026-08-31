@@ -1,0 +1,37 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "visitas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "asesorUid", "order": "ASCENDING"},
+        {"fieldPath": "updatedAt", "order": "ASCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "visitas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "temperatura", "order": "ASCENDING"},
+        {"fieldPath": "updatedAt", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "visitas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "asesorUid", "order": "ASCENDING"},
+        {"fieldPath": "fechaRegistro", "order": "DESCENDING"}
+      ]
+    },
+    {
+      "collectionGroup": "inmuebles",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {"fieldPath": "ciudad", "order": "ASCENDING"},
+        {"fieldPath": "updatedAt", "order": "ASCENDING"}
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

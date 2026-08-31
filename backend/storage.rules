@@ -1,0 +1,32 @@
+rules_version = '2';
+
+// Reglas de Cloud Storage: evidencia fotografica y firmas de las visitas.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+
+    function esCoordinador() {
+      return autenticado() &&
+        (request.auth.token.rol == 'coordinador' ||
+         request.auth.token.rol == 'admin');
+    }
+
+    // Cada asesor escribe solo dentro de su propia carpeta.
+    match /visitas/{asesorUid}/{visitaId}/{archivo} {
+      allow read: if esCoordinador() || request.auth.uid == asesorUid;
+
+      allow write: if request.auth.uid == asesorUid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+
+      allow delete: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
