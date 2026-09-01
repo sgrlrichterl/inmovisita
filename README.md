@@ -321,6 +321,20 @@ Test Suites: 4 passed, 4 total
 Tests:       32 passed, 32 total
 ```
 
+### Evidencias de ejecución
+
+Capturas tomadas de la aplicación corriendo en Android 16 (API 36), en modo demostración y sin backend configurado, que es el escenario equivalente a operar sin cobertura.
+
+| Catálogo replicado en el dispositivo | Visitas calificadas | Cola de salida |
+|---|---|---|
+| ![Catálogo](docs/img/catalogo-offline.png) | ![Visitas](docs/img/visitas-calificadas.png) | ![Sincronización](docs/img/cola-sincronizacion.png) |
+
+En la primera, el catálogo se consulta desde SQLite sin ninguna petición de red, y la franja superior anuncia que hay dos registros esperando.
+
+En la segunda, dos visitas registradas en campo con su calificación automática: una **caliente con 75 puntos** y otra **tibia con 62**. La diferencia entre ambas es el presupuesto declarado por el cliente, que hace caer el factor de capacidad de compra un tramo completo. Ambas figuran como *pendiente de subir*.
+
+En la tercera, el panel de sincronización: dos operaciones en cola, ninguna fallida, y el aviso de que la aplicación corre en modo demostración. Al configurar `API_BASE_URL` y `FIREBASE_API_KEY`, esa misma cola se vacía contra la API sin que el asesor intervenga.
+
 Las pruebas del cliente incluyen un escenario de integración que abre una base **SQLite real en memoria** (`sqflite_common_ffi`) y comprueba que registrar una visita sin red deja exactamente una operación en la cola, que un rechazo permanente no se reintenta y que un fallo de red sí conserva la operación. La verificación de tipos, el análisis estático y ambas suites corren en cada `push` mediante [GitHub Actions](.github/workflows/ci.yml).
 
 El detalle de casos y la matriz de trazabilidad requisito → prueba están en [`docs/07-pruebas-y-resultados.md`](docs/07-pruebas-y-resultados.md).
